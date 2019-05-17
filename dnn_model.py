@@ -1,10 +1,10 @@
 import numpy as np
 from time import time
 
-# 设置如何处理浮点错误, 忽略溢出错误
+# Set how floating-point errors are handled: Take no action when the exception occurs
 np.seterr(over='ignore')
 
-# 4层dnn结构 3 - 5 - 3 - 1
+# Architecture of DNN : 3 - 5 - 3 - 1
 class NeuralNetwork():
     def __init__(self, l2=5, l3=3):
         np.random.seed(21)
