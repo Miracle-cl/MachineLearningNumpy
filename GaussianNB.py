@@ -45,7 +45,7 @@ class MyGaussianNB:
         # input_data : features array of 1 sample [.....]
         probs = dict() # key-label; value-probs_density
         for label, description in self.data_description.items():
-            probs[label] = 1
+            probs[label] = 1 # prob of (y = ck) if classes are uniform then get 1 else num_class / all_class 
             for i, xi in enumerate(input_data):
                 mean, std = description[i]
                 probs[label] *= self.probability_density(xi, mean, std)
