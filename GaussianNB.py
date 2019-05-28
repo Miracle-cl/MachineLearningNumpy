@@ -38,7 +38,8 @@ class MyGaussianNB:
         return "GussianNB train done!"
 
     def probability_density(self, xi, mean, std):
-        # Gaussian/Normal Distribution: Probability Mass Function  
+        # Gaussian/Normal Distribution: Probability Density Function  
+        # probability = probability_density * dx, same dx
         return exp(- 0.5 * pow((xi - mean) / std, 2)) / (std * sqrt(2 * pi))
 
     def calculate_probs(self, input_data):
