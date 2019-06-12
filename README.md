@@ -1,2 +1,3 @@
-# MachineLearning_Numpy
-Implement Machine Learning Algorithms with Numpy
+## Implement ML algorithms by Numpy
+
+code reference : https://github.com/wzyonggege/statistical-learning-method
