@@ -1,4 +1,45 @@
 import numpy as np
+from pprint import pprint
+
+
+class HiddenMarkov_V2:
+    # Q : set of state
+    # V : set of observation
+    # A : matrix of probability of state transfer - len(Q) * len(Q)
+    # B : matrix of probability of observation - len(Q) * len(V)
+    # O : observation sequence
+    # PI : vector of probability of original state - len(PI) == len(Q)
+    @staticmethod
+    def viterbi(V, A, B, O, PI):
+        N = len(A) # num of states
+        T = len(O) # num of observations
+        prob_mat = np.zeros((N, T))
+        path_mat = np.zeros((N, T)).astype(int)
+        # cal first state by first observation
+        color = V.index(O[0])
+        states = B[:, color] * PI
+        prob_mat[:, 0] = states
+        # path_mat[:, 1] = np.argmax(nxt, axis=0)
+        for t in range(1, T):
+            states = states.reshape(3,1)
+            color = V.index(O[t])
+            nxt = states * A * B[:, color]
+            states = np.max(nxt, axis=0)
+            prob_mat[:, t] = states
+            path_mat[:, t] = np.argmax(nxt, axis=0)
+        # pprint(prob_mat)
+        # pprint(path_mat)
+
+        last_prob = np.max(prob_mat[:, T-1])
+        last_state = np.argmax(prob_mat[:, T-1])
+        hid_states = [last_state]
+        for t in range(T-1, 0, -1):
+            s = hid_states[-1]
+            # path_mat[s, t] is the former state
+            hid_states.append(path_mat[s, t])
+        hid_states.reverse()
+        return [s+1 for s in hid_states], last_prob
+
 
 class HiddenMarkov:
     # Q : set of state
