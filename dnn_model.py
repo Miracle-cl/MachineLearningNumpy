@@ -19,7 +19,7 @@ class NeuralNetwork():
         return x * (1 - x)
 
     def train(self, inputs_, labels_, training_iterations, learning_rate):
-        for iteration in range(training_iterations):
+        for _ in range(training_iterations):
             # forward pass
             # inputs 4*3
             a2 = self.__sigmoid(np.dot(inputs_, self.weights1)) # 4*5
@@ -28,7 +28,9 @@ class NeuralNetwork():
 
             # backwards pass
             # calculate dw3
-            output_error = labels_ - output # derivative of (binary)CrossEntropyLoss function
+            # derivative of MSE: (labels_ - output) * out * (1 - out) x a3
+            # derivative of (binary)CrossEntropyLoss: (labels_ - output) x a3
+            output_error = labels_ - output 
             output_error_term = output_error * self.__sigmoid_derivative(output) # 4*1
             delt_w3 = learning_rate * np.dot(a3.T, output_error_term) # 3*1 = 3*4 dot 4*1
 
