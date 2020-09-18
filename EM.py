@@ -1,6 +1,7 @@
 import math
 import numpay as np
 from scipy import stats
+from collections import Counter
 
 class EM:
     @staticmethod
@@ -68,5 +69,5 @@ class EM:
             c = np.mean(c_probs)
             a = cnt['AH'] / (cnt['AH'] + cnt['AT'])
             b = cnt['BH'] / (cnt['BH'] + cnt['BT'])
-            print(a, b, c)
+            print(epoch, a, b, c)
         return a, b, c
