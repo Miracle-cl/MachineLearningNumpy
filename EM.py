@@ -1,5 +1,5 @@
 import math
-import numpay as np
+import numpy as np
 from scipy import stats
 from collections import Counter
 
@@ -7,7 +7,7 @@ class EM:
     @staticmethod
     def two_coin_model():
         # expectation maximization algorithm: 2 coins model
-        # theta_a ： A硬币正面的概率
+        # theta_a :  A硬币正面的概率
         # theta_b :  B硬币正面的概率
         # pa :  当前硬币是A的概率
         # pb :  当前硬币是B的概率
@@ -71,3 +71,31 @@ class EM:
             b = cnt['BH'] / (cnt['BH'] + cnt['BT'])
             print(epoch, a, b, c)
         return a, b, c
+
+    @staticmethod
+    def homework_91():
+        pi = 0.46
+        p = 0.55
+        q = 0.67
+        Y = np.array([1,1,0,1,0,0,1,0,1,1])
+
+        def cal_miu(y, pi, p, q):
+            pb = pi * math.pow(p, y) * math.pow(1-p, 1-y)
+            pc = (1 - pi) * math.pow(q, y) * math.pow(1-q, 1-y)
+            return pb / (pb + pc)
+
+        def gen_para(Y, pi, p, q):
+            MIU = np.array([cal_miu(y, pi, p, q) for y in Y])
+            pi = np.mean(MIU)
+            p = MIU.dot(Y) / np.sum(MIU)
+            q = (1 - MIU).dot(Y) / np.sum(1-MIU)
+            return pi, p, q
+
+        for _ in range(10):
+            pi, p, q = gen_para(Y, pi, p, q)
+            print(pi, p, q)
+
+
+if __name__ == '__main__':
+    em = EM()
+    print(em.two_coin_model())

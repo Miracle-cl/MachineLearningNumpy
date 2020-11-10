@@ -88,3 +88,4 @@ class AdaBoost:
 
 ab = AdaBoost(x, y)
 ab.fit(iters=20)
+print(ab.G)
