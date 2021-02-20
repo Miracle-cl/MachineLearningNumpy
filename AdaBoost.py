@@ -33,7 +33,7 @@ class AdaBoost:
         if rule == 'left':
             # left = -1, right = 1
             res[np.where(self.x[:, dim] <= threshVal)] = -1
-        if rule == 'right':
+        elif rule == 'right':
             # left = 1, right = -1
             res[np.where(self.x[:, dim] > threshVal)] = -1
         return res
