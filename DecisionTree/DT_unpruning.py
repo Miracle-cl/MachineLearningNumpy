@@ -15,6 +15,7 @@ class TreeNode:
     label: int
     children: List[TreeNode] = field(default_factory=list)
 
+
 # class TreeNode:
 #     def __init__(self, feat_val, feature, label):
 #         self.feat_val = feat_val # feat value of parent node
@@ -28,6 +29,7 @@ class TreeNode:
 
 
 class DT:
+    # ID3, C4.5, CART
     def __init__(self, dataset, columns, algo='ID3', epsilon=0.01):
         self.df = pd.DataFrame.from_records(dataset, columns=cols)
         self.feat_val_mp = {col: set(self.df[col]) for col in self.df.columns}
@@ -129,7 +131,65 @@ class DT:
             sub_tree = self.train(sub_df, sub_feat_val, best_feat)
             root.children.append(sub_tree)
         return root
+
+    @staticmethod
+    def cal_gini_index(df, feature, feat_val, label):
+        n = len(df)
+
+        gini_index = 0
+        df1 = df[df[feature] == feat_val][label]
+        n1 = len(df1)
+        if n1 > 0:
+            pk = df1.value_counts().values[0] / n1 # if no values len == 1 then key error
+            gini_index += n1 * 2 * pk * (1 - pk)
+
+        df2 = df[df[feature] != feat_val][label]
+        n2 = len(df2)
+        if n2 > 0:
+            pk = df2.value_counts().values[0] / n2
+            gini_index += n2 * 2 * pk * (1 - pk)
+
+        gini_index /= n
+        return gini_index
     
+    def train_cart(self, df, p_feat_val, p_feature):
+        # input : parent infomation
+        # dataset is blank, then max freqency in all dataset
+        if len(df) == 0:
+            max_freq_label = self.df[self.df[p_feature] == p_feat_val][self.label].value_counts().index[0]
+            return TreeNode(p_feat_val, None, max_freq_label)
+
+        feats, label = df.columns[:-1], df.columns[-1]
+        y_train = df[label]
+
+        # if all data belong one class then tree finished growing
+        if len(y_train.value_counts()) == 1:
+            # print('11', feat_val, y_train.iloc[0])
+            return TreeNode(p_feat_val, None, y_train.iloc[0])
+
+        best = [float('inf'), None, None]
+        for feature in feats:
+            for feat_val in set(df[feature]):
+                # cal gini-index
+                gini_i = self.cal_gini_index(df, feature, feat_val, self.label)
+                if gini_i < best[0]:
+                    best = [gini_i, feature, feat_val]
+
+        if best[-1] is None:
+            return TreeNode(p_feat_val, None, y_train.value_counts().index[0])
+
+        gini_i, feature, feat_val = best
+        root = TreeNode(p_feat_val, feature, None)
+
+        # left sub tree : feature == feat_val
+        sub_left = df[df[feature] == feat_val]
+        root.children.append(self.train_cart(sub_left, feat_val, feature))
+
+        # right sub tree
+        sub_right = df[df[best[1]] != best[2]]
+        root.children.append(self.train_cart(sub_right, '!' + feat_val, feature))
+        return root
+
     def dfs(self, root):
         # serialization of root
         if not root:
@@ -161,13 +221,14 @@ if __name__ == '__main__':
             ['乌黑','稍蜷','浊响','清晰','稍凹','软粘',0.360,0.370,0],
             ['浅白','蜷缩','浊响','模糊','平坦','硬滑',0.593,0.042,0],
             ['青绿','蜷缩','沉闷','稍糊','稍凹','硬滑',0.719,0.103,0]]
-    cols = ['色泽','根蒂','敲声','纹理','脐部','触感','密度','含糖率','好瓜']
+    # cols = ['色泽','根蒂','敲声','纹理','脐部','触感','密度','含糖率','好瓜']
 
     datasets = [row[:6] + row[-1:] for row in dataset]
     cols = ['色泽','根蒂','敲声','纹理','脐部','触感','好瓜']
 
     dt = DT(datasets, cols, algo='C4.5')
-    root = dt.train(dt.df, None)
+    # root = dt.train(dt.df, None)
+    root = dt.train_cart(dt.df, None, None)
     # print(root)
     print('----------------------------------')
     print(dt.dfs(root))

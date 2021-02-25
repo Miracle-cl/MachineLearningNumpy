@@ -74,9 +74,11 @@ class EM:
 
     @staticmethod
     def homework_91():
-        pi = 0.46
-        p = 0.55
-        q = 0.67
+        # pi = 0.46
+        # p = 0.55
+        # q = 0.67
+        pi, p, q = 0.4, 0.5, 0.6
+        # pi, p, q = 0.5, 0.5, 0.5
         Y = np.array([1,1,0,1,0,0,1,0,1,1])
 
         def cal_miu(y, pi, p, q):
@@ -98,4 +100,5 @@ class EM:
 
 if __name__ == '__main__':
     em = EM()
-    print(em.two_coin_model())
+    # print(em.two_coin_model())
+    em.homework_91()

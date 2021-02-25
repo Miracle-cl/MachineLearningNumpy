@@ -28,6 +28,7 @@ class TreeNode:
 
 
 class PurningDT:
+    # Reduced-Error Pruning
     def __init__(self, train_df, val_df, algo='ID3', epsilon=0.01):
         self.df = train_df
         self.val_df = val_df
@@ -182,7 +183,7 @@ class PurningDT:
 
         corr = 0
         preds = []
-        for index, item in val_df.iterrows():
+        for _, item in val_df.iterrows():
             label = item[self.label]
             pred = recurve(root, item)
             corr += int(pred == label)
